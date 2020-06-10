@@ -22,7 +22,7 @@ p = lambda_ / n
 st.sidebar.markdown(f'calculated p is **{p}**')
 size = st.sidebar.number_input('sample size', value=1000)
 
-st.subheader('Comparison between Poisson and Binomial')
+st.header('Comparison between Poisson and Binomial')
 # グラフ設定
 fig = plt.figure(figsize=(20,10))
 ax = fig.add_subplot(111)
@@ -36,7 +36,7 @@ ax.legend(loc='upper right', fontsize='xx-large')
 fig.tight_layout()
 
 # 可視化
-st.subheader('Misualization of distributions')
+st.subheader('Visualization of distributions')
 st.pyplot(fig)
 
 # 数式表現
