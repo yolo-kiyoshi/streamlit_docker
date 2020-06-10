@@ -1,46 +1,51 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-
-
-
-
+import random
 import matplotlib.pyplot as plt
+import seaborn as sns
 
-st.header('Play with Normal Distribution!')
+sns.set()
+# 乱数シード固定
+np.random.seed(0)
 
-mu = st.slider(
-  'Select a mean',
-  0.0, 100.0, 50.0
+# sidebarにおけるパラメータ設定
+st.sidebar.markdown('Set Parameter')
+lambda_ = st.sidebar.number_input(
+  'input lambda',
+  min_value=1,
+  max_value=100,
+  value=10
 )
-sigma = st.slider(
-  'Select a standard deviation error',
-  0.0, 100.0, 10.0
-)  # 👈 this is a widget
-arr = np.random.normal(mu, sigma**2, size=1000)
-plt.hist(arr, bins=100)
-plt.title(f'normal distribution ,mu:{mu}, sigma:{sigma}')
-st.pyplot()
+n = st.sidebar.number_input('input n', value=50)
+p = lambda_ / n
+st.sidebar.markdown(f'calculated p is **{p}**')
+size = st.sidebar.number_input('sample size', value=1000)
 
-st.text('Here is the expression.')
+st.subheader('Comparison between Poisson and Binomial')
+# グラフ設定
+fig = plt.figure(figsize=(20,10))
+ax = fig.add_subplot(111)
+# ポアソン分布
+points = np.random.poisson(lambda_, size=size)
+sns.distplot(points, hist=False, bins=100, ax=ax, label='Poisson')
+# 二項分布
+points = np.random.binomial(n, p, size=size)
+sns.distplot(points, hist=False, bins=100, ax=ax, label='Binomial')
+ax.legend(loc='upper right', fontsize='xx-large')
+fig.tight_layout()
+
+# 可視化
+st.subheader('Misualization of distributions')
+st.pyplot(fig)
+
+# 数式表現
+st.subheader('Mathematical expression')
+st.text('Poisson distribution is defined by:')
 st.latex(r'''
-N(\mu, \sigma) = \frac{1}{\sqrt{2 \pi }\sigma} exp^{-\frac{(x-\mu)^2}{2{\sigma}^2}}
+Po(\lambda) = \frac{\lambda^x e^{-\lambda}}{x!}
 ''')
-
-
-st.header('Play with Poisson Distribution!')
-
-lambda_ = st.slider(
-  'Select a lambda',
-  0.0, 100.0, 5.0
-)
-
-arr = np.random.poisson(lambda_, size=1000)
-plt.hist(arr, bins=100)
-plt.title(f'Poisson distribution ,lambda:{lambda_}')
-st.pyplot()
-
-st.text('Here is the expression.')
+st.text('Binomial distribution is defined by:')
 st.latex(r'''
-Poisson(\lambda) = \frac{e^{-\lambda}{\lambda}^k}{k!}
+Bin(n, p) = {}_n \mathrm{C} _x p^x (1-p)^{n-x}
 ''')
